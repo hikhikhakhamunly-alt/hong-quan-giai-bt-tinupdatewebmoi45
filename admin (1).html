@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🛠️ Admin – Hồng Quân</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon:#00ff88;--lime:#7dff00;--mint:#00ffc8;
+  --text:#e8ffe8;--muted:#7fbf9f;
+  --card:rgba(8,30,18,.8);--border:rgba(0,255,136,.35);
+  --red:#ff4d6d;--yellow:#ffcc00
+}
+html,body{
+  min-height:100%;font-family:'Quicksand',sans-serif;color:var(--text);
+  background:radial-gradient(circle at 15% 20%,rgba(0,255,136,.15) 0,transparent 35%),
+             radial-gradient(circle at 85% 80%,rgba(125,255,0,.12) 0,transparent 40%),
+             linear-gradient(135deg,#04170d,#0a2e18 40%,#062012 70%,#03110a);
+  background-attachment:fixed
+}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{
+  width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:36px 28px;backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(0,0,0,.6),0 0 60px rgba(0,255,136,.2)
+}
+.login-box h1{
+  font-family:'Orbitron',sans-serif;font-size:26px;text-align:center;
+  background:linear-gradient(90deg,var(--neon),var(--lime),var(--mint));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px
+}
+.login-box p.sub{text-align:center;color:var(--muted);margin-bottom:26px;font-size:13px}
+.container{max-width:1200px;margin:0 auto;padding:24px 16px 60px}
+.header{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+  margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid rgba(0,255,136,.2)
+}
+.header h1{
+  font-family:'Orbitron',sans-serif;font-size:24px;
+  background:linear-gradient(90deg,var(--neon),var(--mint));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.header .user-info{color:var(--mint);font-size:14px;font-weight:600;margin-top:4px}
+.header .actions{display:flex;gap:10px}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px 20px;margin-bottom:24px;backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(0,0,0,.5);transition:all .3s
+}
+.card h2{font-family:'Orbitron',sans-serif;font-size:18px;margin-bottom:18px;color:#fff;text-shadow:0 0 16px var(--neon)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:768px){.form-row,.form-row-3{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-group label{font-size:13px;font-weight:600;color:var(--mint)}
+.form-group input,.form-group select{
+  padding:11px 14px;background:rgba(4,20,12,.9);border:1px solid rgba(0,255,136,.3);
+  border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:all .3s
+}
+.form-group input:focus,.form-group select:focus{
+  border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,136,.2)
+}
+.form-group select option{background:#0a2e18;color:#fff}
+.btn{
+  padding:12px 20px;border:none;border-radius:10px;
+  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;
+  color:#fff;cursor:pointer;transition:all .3s
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(135deg,#00aa55,var(--neon));color:#001a0d;box-shadow:0 0 20px rgba(0,255,136,.5)}
+.btn-danger{background:linear-gradient(135deg,#cc0033,var(--red));box-shadow:0 0 20px rgba(255,77,109,.5)}
+.btn-secondary{background:linear-gradient(135deg,#007744,var(--mint));color:#001a0d}
+.btn-success{background:linear-gradient(135deg,#00aa55,var(--lime));color:#001a0d}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost.active{background:rgba(0,255,136,.2);border-color:var(--neon);color:var(--neon)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+table th,table td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(0,255,136,.1)}
+table th{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--mint);text-transform:uppercase}
+table td.key-cell{font-family:monospace;font-weight:700;color:var(--neon);cursor:pointer}
+table tr:hover{background:rgba(0,255,136,.05)}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.badge.active{background:rgba(0,255,136,.15);color:var(--neon);border:1px solid rgba(0,255,136,.4)}
+.badge.locked{background:rgba(255,77,109,.15);color:var(--red);border:1px solid rgba(255,77,109,.4)}
+.badge.expired{background:rgba(255,204,0,.15);color:var(--yellow);border:1px solid rgba(255,204,0,.4)}
+.msg{padding:12px 14px;border-radius:10px;font-size:14px;margin-top:14px;display:none;white-space:pre-line}
+.msg.show{display:block}
+.msg.success{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.5);color:#7dffb0}
+.msg.error{background:rgba(255,60,100,.12);border:1px solid rgba(255,60,100,.5);color:#ff8ba5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.stat .num{
+  font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;
+  background:linear-gradient(90deg,var(--neon),var(--lime));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.stat .label{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:linear-gradient(135deg,#00aa55,var(--neon));color:#001a0d;
+  padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;
+  transform:translateY(120%);transition:transform .4s;z-index:9999
+}
+.toast.show{transform:translateY(0)}
+.toast.error{background:linear-gradient(135deg,#ff0055,var(--red));color:#fff}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login-wrap">
+  <div class="login-box">
+    <h1>🛠️ ADMIN LOGIN</h1>
+    <p class="sub">Hồng Quân – Giải Bài Tập Tin</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Tên đăng nhập</label>
+        <input type="text" id="username" placeholder="VD: admin01" required />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu..." required />
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">🔓 Đăng nhập</button>
+      <div class="msg error" id="loginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<div id="mainView" class="container hidden">
+  <div class="header">
+    <div>
+      <h1>⚙️ Quản trị KEY</h1>
+      <div class="user-info" id="userInfo">Đang tải...</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost btn-sm" id="refreshBtn">🔄 Làm mới</button>
+      <button class="btn btn-danger btn-sm" id="logoutBtn">🚪 Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="statTotal">0</div><div class="label">Tổng KEY của bạn</div></div>
+    <div class="stat"><div class="num" id="statActive">0</div><div class="label">Đang hoạt động</div></div>
+    <div class="stat"><div class="num" id="statLocked">0</div><div class="label">Đã khóa</div></div>
+    <div class="stat"><div class="num" id="statExpired">0</div><div class="label">Hết hạn</div></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ Tạo KEY mới</h2>
+    <form id="createForm">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label>Loại KEY</label>
+          <select id="keyType" required>
+            <option value="M1">M1</option>
+            <option value="M2">M2</option>
+            <option value="M3">M3</option>
+            <option value="Vĩnh viễn">Vĩnh viễn</option>
+            <option value="Tự do">Tự do</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tiền tố</label>
+          <input type="text" id="keyPrefix" value="HQ" maxlength="6" />
+        </div>
+        <div class="form-group">
+          <label>Số lượng</label>
+          <input type="number" id="keyQty" value="1" min="1" max="100" required />
+        </div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label>Thời hạn (trống = vĩnh viễn)</label>
+          <input type="number" id="durationValue" min="1" placeholder="VD: 30" />
+        </div>
+        <div class="form-group">
+          <label>Đơn vị</label>
+          <select id="durationUnit">
+            <option value="hours">Giờ</option>
+            <option value="days" selected>Ngày</option>
+            <option value="months">Tháng</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Số lần dùng (trống = vô hạn)</label>
+          <input type="number" id="maxUses" min="1" placeholder="VD: 10" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ghi chú</label>
+        <input type="text" id="keyNote" placeholder="VD: Tặng Khánh lớp 11A1" />
+      </div>
+      <button type="submit" class="btn btn-primary">🚀 Tạo KEY</button>
+      <div class="msg" id="createMsg"></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>📋 Danh sách KEY của bạn</h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="btn btn-ghost btn-sm filter-btn active" data-filter="all">Tất cả</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="active">Hoạt động</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="locked">Đã khóa</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="expired">Hết hạn</button>
+      <input type="text" id="searchInput" placeholder="🔍 Tìm KEY..." style="flex:1;min-width:180px;padding:8px 12px;background:rgba(4,20,12,.9);border:1px solid rgba(0,255,136,.3);border-radius:8px;color:var(--text)" />
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>KEY</th><th>Loại</th><th>Hạn</th><th>Lượt</th><th>Trạng thái</th><th>Ghi chú</th><th>Hành động</th>
+        </tr></thead>
+        <tbody id="keyTableBody">
+          <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getDatabase, ref, push, set, update, onValue, remove, get
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBgMM_kWB6jDjTYgP2j-GEnMXKXTwxDdss",
+  authDomain: "hongquan-web.firebaseapp.com",
+  databaseURL: "https://hongquan-web-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hongquan-web",
+  storageBucket: "hongquan-web.firebasestorage.app",
+  messagingSenderId: "117599956210",
+  appId: "1:117599956210:web:492dc0a9c290c4e346346b"
+};
+
+const SESSION_KEY = "hq_admin_session";
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let currentAdmin = null;
+let allKeys = [];
+let currentFilter = "all";
+let searchTerm = "";
+let unsubscribe = null;
+
+const loginView = document.getElementById("loginView");
+const mainView = document.getElementById("mainView");
+const loginForm = document.getElementById("loginForm");
+const loginMsg = document.getElementById("loginMsg");
+const toast = document.getElementById("toast");
+
+function showToast(text, isError = false) {
+  toast.textContent = text;
+  toast.className = "toast show" + (isError ? " error" : "");
+  setTimeout(() => toast.className = "toast", 2500);
+}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = loginMsg;
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+
+  if (!username || !password) {
+    msg.textContent = "❌ Vui lòng nhập đủ thông tin!";
+    msg.className = "msg error show"; return;
+  }
+
+  msg.textContent = "⏳ Đang kiểm tra...";
+  msg.className = "msg success show";
+
+  try {
+    const cfgSnap = await get(ref(db, "config/superAdmin"));
+    const cfg = cfgSnap.val() || {};
+    const adminPassword = cfg.adminPassword || "VANDATADMINPHU";
+
+    if (password !== adminPassword) {
+      msg.textContent = "❌ Sai mật khẩu!";
+      msg.className = "msg error show"; return;
+    }
+
+    const adminsSnap = await get(ref(db, "admins"));
+    const admins = adminsSnap.val() || {};
+    delete admins._placeholder;
+
+    const entry = Object.entries(admins).find(([id, a]) => a.username === username);
+    if (!entry) {
+      msg.textContent = "❌ Không tìm thấy tài khoản!";
+      msg.className = "msg error show"; return;
+    }
+
+    const [adminId, adminData] = entry;
+    if (adminData.status === "locked") {
+      msg.textContent = "🔒 Tài khoản đã bị khóa!";
+      msg.className = "msg error show"; return;
+    }
+
+    currentAdmin = { id: adminId, username: adminData.username, name: adminData.name || adminData.username };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentAdmin));
+    showMain();
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+(function restoreSession() {
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved) {
+    try {
+      currentAdmin = JSON.parse(saved);
+      showMain();
+    } catch(e) { sessionStorage.removeItem(SESSION_KEY); }
+  }
+})();
+
+function showMain() {
+  loginView.classList.add("hidden");
+  mainView.classList.remove("hidden");
+  document.getElementById("userInfo").textContent = `👤 ${currentAdmin.name} (${currentAdmin.username})`;
+  loadKeys();
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem(SESSION_KEY);
+  if (unsubscribe) unsubscribe();
+  location.reload();
+});
+
+document.getElementById("refreshBtn").addEventListener("click", () => { showToast("Đã làm mới"); loadKeys(); });
+
+function generateKey(prefix, type) {
+  const t = (type || "XX").replace(/\s+/g, "").substring(0, 3).toUpperCase();
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let r = "";
+  for (let i = 0; i < 10; i++) r += chars.charAt(Math.floor(Math.random() * chars.length));
+  const p = (prefix || "HQ").toUpperCase().substring(0, 6);
+  return `${p}-${t}-${r.substring(0,5)}-${r.substring(5,10)}`;
+}
+
+document.getElementById("createForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("createMsg");
+  const type = document.getElementById("keyType").value;
+  const prefix = document.getElementById("keyPrefix").value.trim() || "HQ";
+  const qty = parseInt(document.getElementById("keyQty").value) || 1;
+  const durVal = document.getElementById("durationValue").value.trim();
+  const durUnit = document.getElementById("durationUnit").value;
+  const maxUsesRaw = document.getElementById("maxUses").value.trim();
+  const note = document.getElementById("keyNote").value.trim();
+
+  let expiresAt = null;
+  if (durVal) {
+    const v = parseInt(durVal);
+    let ms = 0;
+    if (durUnit === "hours") ms = v * 3600 * 1000;
+    else if (durUnit === "days") ms = v * 86400 * 1000;
+    else if (durUnit === "months") ms = v * 30 * 86400 * 1000;
+    expiresAt = Date.now() + ms;
+  }
+  const maxUses = maxUsesRaw ? parseInt(maxUsesRaw) : null;
+
+  msg.textContent = "⏳ Đang tạo KEY...";
+  msg.className = "msg success show";
+
+  try {
+    const createdKeys = [];
+    for (let i = 0; i < qty; i++) {
+      const newKey = generateKey(prefix, type);
+      const keyRef = push(ref(db, "keys"));
+      await set(keyRef, {
+        key: newKey, type, createdAt: Date.now(),
+        expiresAt, maxUses, usedCount: 0,
+        status: "active", note,
+        createdBy: currentAdmin.id,
+        createdByName: currentAdmin.name
+      });
+      createdKeys.push(newKey);
+    }
+    msg.textContent = `✅ Đã tạo ${qty} KEY!\n\n` + createdKeys.join("\n");
+    msg.className = "msg success show";
+    e.target.reset();
+    document.getElementById("keyPrefix").value = "HQ";
+    document.getElementById("keyQty").value = "1";
+    showToast("Đã tạo " + qty + " KEY");
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+function loadKeys() {
+  if (unsubscribe) unsubscribe();
+  unsubscribe = onValue(ref(db, "keys"), (snap) => {
+    const data = snap.val() || {};
+    allKeys = Object.entries(data)
+      .map(([id, val]) => ({ id, ...val }))
+      .filter(k => k.createdBy === currentAdmin.id);
+    updateStats();
+    renderTable();
+  }, (err) => {
+    document.getElementById("keyTableBody").innerHTML =
+      `<tr><td colspan="7" style="text-align:center;color:var(--red);padding:30px">❌ Lỗi: ${err.message}</td></tr>`;
+  });
+}
+
+function updateStats() {
+  let a = 0, l = 0, e = 0;
+  allKeys.forEach(k => {
+    const st = getStatus(k);
+    if (st === "active") a++;
+    else if (st === "locked") l++;
+    else if (st === "expired") e++;
+  });
+  document.getElementById("statTotal").textContent = allKeys.length;
+  document.getElementById("statActive").textContent = a;
+  document.getElementById("statLocked").textContent = l;
+  document.getElementById("statExpired").textContent = e;
+}
+
+function getStatus(k) {
+  if (k.status === "locked") return "locked";
+  if (k.expiresAt && Date.now() > k.expiresAt) return "expired";
+  return "active";
+}
+
+function renderTable() {
+  let list = allKeys.slice();
+  if (currentFilter !== "all") list = list.filter(k => getStatus(k) === currentFilter);
+  if (searchTerm) {
+    const s = searchTerm.toLowerCase();
+    list = list.filter(k =>
+      (k.key || "").toLowerCase().includes(s) ||
+      (k.note || "").toLowerCase().includes(s)
+    );
+  }
+  list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  const tbody = document.getElementById("keyTableBody");
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Không có KEY nào</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(k => {
+    const st = getStatus(k);
+    const stLabel = { active: "Hoạt động", locked: "Đã khóa", expired: "Hết hạn" }[st];
+    const expiresText = k.expiresAt ? formatDate(k.expiresAt) + (st === "expired" ? " ⚠️" : "") : "♾️ Vĩnh viễn";
+    const usesText = k.maxUses ? `${k.usedCount || 0} / ${k.maxUses}` : `${k.usedCount || 0} / ∞`;
+
+    return `
+      <tr>
+        <td class="key-cell" onclick="copyKey('${k.key}')" title="Bấm để copy">${k.key}</td>
+        <td>${k.type || "-"}</td>
+        <td>${expiresText}</td>
+        <td>${usesText}</td>
+        <td><span class="badge ${st}">${stLabel}</span></td>
+        <td style="color:var(--muted);font-size:13px">${escapeHtml(k.note || "")}</td>
+        <td>
+          <button class="btn btn-sm ${st === "locked" ? "btn-success" : "btn-secondary"}" onclick="toggleLock('${k.id}','${k.status}')">
+            ${st === "locked" ? "🔓 Mở" : "🔒 Khóa"}
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteKey('${k.id}')">🗑️</button>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+function formatDate(ts) {
+  return new Date(ts).toLocaleString("vi-VN", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+window.copyKey = function(key) {
+  navigator.clipboard.writeText(key).then(() => showToast("Đã copy: " + key));
+};
+
+window.toggleLock = async function(id, currentStatus) {
+  try {
+    const newStatus = currentStatus === "locked" ? "active" : "locked";
+    await update(ref(db, "keys/" + id), { status: newStatus });
+    showToast(newStatus === "locked" ? "Đã khóa KEY" : "Đã mở KEY");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+window.deleteKey = async function(id) {
+  if (!confirm("Xóa KEY này? Không hoàn tác được!")) return;
+  try {
+    await remove(ref(db, "keys/" + id));
+    showToast("Đã xóa KEY");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTable();
+  });
+});
+
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  renderTable();
+});
+</script>
+</body>
+</html>

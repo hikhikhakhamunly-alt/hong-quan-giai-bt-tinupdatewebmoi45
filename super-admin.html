@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>👑 Super Admin – Hồng Quân</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon:#00ff88;--lime:#7dff00;--mint:#00ffc8;
+  --gold:#ffd700;--gold2:#ffaa00;
+  --text:#e8ffe8;--muted:#7fbf9f;
+  --card:rgba(8,30,18,.8);--border:rgba(0,255,136,.35);
+  --red:#ff4d6d;--yellow:#ffcc00
+}
+html,body{
+  min-height:100%;font-family:'Quicksand',sans-serif;color:var(--text);
+  background:radial-gradient(circle at 15% 20%,rgba(0,255,136,.15) 0,transparent 35%),
+             radial-gradient(circle at 85% 80%,rgba(255,215,0,.12) 0,transparent 40%),
+             linear-gradient(135deg,#04170d,#0a2e18 40%,#062012 70%,#03110a);
+  background-attachment:fixed
+}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{
+  width:100%;max-width:440px;background:var(--card);border:2px solid var(--gold);
+  border-radius:20px;padding:38px 30px;backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 60px rgba(255,215,0,.25)
+}
+.login-box h1{
+  font-family:'Orbitron',sans-serif;font-size:28px;text-align:center;
+  background:linear-gradient(90deg,var(--gold),var(--neon),var(--mint));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px
+}
+.login-box p.sub{text-align:center;color:var(--muted);margin-bottom:26px;font-size:13px}
+.container{max-width:1400px;margin:0 auto;padding:24px 16px 60px}
+.header{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+  margin-bottom:26px;padding-bottom:16px;border-bottom:2px solid rgba(255,215,0,.3)
+}
+.header h1{
+  font-family:'Orbitron',sans-serif;font-size:24px;
+  background:linear-gradient(90deg,var(--gold),var(--neon));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.header .actions{display:flex;gap:10px;flex-wrap:wrap}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px 20px;margin-bottom:24px;backdrop-filter:blur(12px);
+  box-shadow:0 8px 40px rgba(0,0,0,.5);transition:all .3s
+}
+.card.gold{border-color:var(--gold)}
+.card h2{font-family:'Orbitron',sans-serif;font-size:18px;margin-bottom:18px;color:#fff;text-shadow:0 0 16px var(--neon)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:768px){.form-row,.form-row-3{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-group label{font-size:13px;font-weight:600;color:var(--mint)}
+.form-group input,.form-group select{
+  padding:11px 14px;background:rgba(4,20,12,.9);border:1px solid rgba(0,255,136,.3);
+  border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:all .3s
+}
+.form-group input:focus,.form-group select:focus{
+  border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,136,.2)
+}
+.form-group select option{background:#0a2e18;color:#fff}
+.btn{
+  padding:12px 20px;border:none;border-radius:10px;
+  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;
+  color:#fff;cursor:pointer;transition:all .3s
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(135deg,#00aa55,var(--neon));color:#001a0d;box-shadow:0 0 20px rgba(0,255,136,.5)}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a0a00;box-shadow:0 0 20px rgba(255,215,0,.6)}
+.btn-danger{background:linear-gradient(135deg,#cc0033,var(--red));box-shadow:0 0 20px rgba(255,77,109,.5)}
+.btn-success{background:linear-gradient(135deg,#00aa55,var(--lime));color:#001a0d}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost.active{background:rgba(0,255,136,.2);border-color:var(--neon);color:var(--neon)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+table th,table td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(0,255,136,.1)}
+table th{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--mint);text-transform:uppercase}
+table td.key-cell{font-family:monospace;font-weight:700;color:var(--neon);cursor:pointer}
+table tr:hover{background:rgba(0,255,136,.05)}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.badge.active{background:rgba(0,255,136,.15);color:var(--neon);border:1px solid rgba(0,255,136,.4)}
+.badge.locked{background:rgba(255,77,109,.15);color:var(--red);border:1px solid rgba(255,77,109,.4)}
+.badge.expired{background:rgba(255,204,0,.15);color:var(--yellow);border:1px solid rgba(255,204,0,.4)}
+.badge.super{background:rgba(255,215,0,.2);color:var(--gold);border:1px solid var(--gold)}
+.msg{padding:12px 14px;border-radius:10px;font-size:14px;margin-top:14px;display:none;white-space:pre-line}
+.msg.show{display:block}
+.msg.success{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.5);color:#7dffb0}
+.msg.error{background:rgba(255,60,100,.12);border:1px solid rgba(255,60,100,.5);color:#ff8ba5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.stat.gold{border-color:var(--gold)}
+.stat .num{
+  font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;
+  background:linear-gradient(90deg,var(--neon),var(--lime));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.stat.gold .num{
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.stat .label{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{
+  padding:10px 20px;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
+  font-family:'Orbitron',sans-serif;font-size:13px
+}
+.tab.active{background:linear-gradient(135deg,#00aa55,var(--neon));color:#001a0d;border-color:var(--neon)}
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:linear-gradient(135deg,#00aa55,var(--neon));color:#001a0d;
+  padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;
+  transform:translateY(120%);transition:transform .4s;z-index:9999
+}
+.toast.show{transform:translateY(0)}
+.toast.error{background:linear-gradient(135deg,#ff0055,var(--red));color:#fff}
+</style>
+</head><body>
+
+<div id="loginView" class="login-wrap">
+  <div class="login-box">
+    <h1>👑 SUPER ADMIN</h1>
+    <p class="sub">Hồng Quân – Quản lý cấp cao</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Mật khẩu Super Admin</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu..." required />
+      </div>
+      <button type="submit" class="btn btn-gold" style="width:100%;">🔓 Đăng nhập</button>
+      <div class="msg error" id="loginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<div id="mainView" class="container hidden">
+  <div class="header">
+    <h1>👑 SUPER ADMIN PANEL</h1>
+    <div class="actions">
+      <button class="btn btn-ghost btn-sm" id="refreshBtn">🔄 Làm mới</button>
+      <button class="btn btn-danger btn-sm" id="logoutBtn">🚪 Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat gold"><div class="num" id="statAdmins">0</div><div class="label">Admin phụ</div></div>
+    <div class="stat"><div class="num" id="statTotalKeys">0</div><div class="label">Tổng KEY</div></div>
+    <div class="stat"><div class="num" id="statActive">0</div><div class="label">KEY hoạt động</div></div>
+    <div class="stat"><div class="num" id="statLocked">0</div><div class="label">KEY đã khóa</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="admins">👥 Admin phụ</div>
+    <div class="tab" data-tab="keys">🔑 Tất cả KEY</div>
+    <div class="tab" data-tab="create">➕ Tạo KEY</div>
+    <div class="tab" data-tab="settings">⚙️ Cài đặt</div>
+  </div>
+
+  <div id="tab-admins" class="tab-content">
+    <div class="card gold">
+      <h2>➕ Tạo Admin phụ mới</h2>
+      <form id="createAdminForm">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Tên đăng nhập</label>
+            <input type="text" id="newAdminUsername" placeholder="VD: admin01" required />
+          </div>
+          <div class="form-group">
+            <label>Tên hiển thị</label>
+            <input type="text" id="newAdminName" placeholder="VD: Nguyễn Văn A" required />
+          </div>
+          <div class="form-group">
+            <label>Email (tùy chọn)</label>
+            <input type="email" id="newAdminEmail" placeholder="admin@gmail.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ghi chú</label>
+          <input type="text" id="newAdminNote" placeholder="VD: Khách mua ngày 1/10" />
+        </div>
+        <button type="submit" class="btn btn-gold">🚀 Tạo Admin</button>
+        <div class="msg" id="adminMsg"></div>
+      </form>
+      <p style="color:var(--muted);font-size:13px;margin-top:10px">
+        💡 Mật khẩu chung admin phụ: <b style="color:var(--gold)">VANDATADMINPHU</b>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>📋 Danh sách Admin phụ</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Username</th><th>Tên</th><th>Email</th><th>Số KEY</th><th>Trạng thái</th><th>Hành động</th>
+          </tr></thead>
+          <tbody id="adminTableBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-keys" class="tab-content hidden">
+    <div class="card">
+      <h2>🔑 Tất cả KEY hệ thống</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm filter-btn active" data-filter="all">Tất cả</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-filter="active">Hoạt động</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-filter="locked">Đã khóa</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-filter="expired">Hết hạn</button>
+        <input type="text" id="searchInput" placeholder="🔍 Tìm KEY..." style="flex:1;min-width:180px;padding:8px 12px;background:rgba(4,20,12,.9);border:1px solid rgba(0,255,136,.3);border-radius:8px;color:var(--text)" />
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>KEY</th><th>Loại</th><th>Người tạo</th><th>Hạn</th><th>Trạng thái</th><th>Hành động</th>
+          </tr></thead>
+          <tbody id="allKeysBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-create" class="tab-content hidden">
+    <div class="card">
+      <h2>➕ Tạo KEY (Super Admin)</h2>
+      <form id="createKeyForm">
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Loại KEY</label>
+            <select id="keyType" required>
+              <option value="M1">M1</option>
+              <option value="M2">M2</option>
+              <option value="M3">M3</option>
+              <option value="Vĩnh viễn">Vĩnh viễn</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tiền tố</label>
+            <input type="text" id="keyPrefix" value="HQ" maxlength="6" />
+          </div>
+          <div class="form-group">
+            <label>Số lượng</label>
+            <input type="number" id="keyQty" value="1" min="1" max="100" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Thời hạn (trống = vĩnh viễn)</label>
+            <input type="number" id="durationValue" placeholder="VD: 30" />
+          </div>
+          <div class="form-group">
+            <label>Đơn vị</label>
+            <select id="durationUnit">
+              <option value="days" selected>Ngày</option>
+              <option value="hours">Giờ</option>
+              <option value="months">Tháng</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ghi chú</label>
+          <input type="text" id="keyNote" placeholder="VD: Tặng Khánh" />
+        </div>
+        <button type="submit" class="btn btn-gold">🚀 Tạo KEY</button>
+        <div class="msg" id="keyMsg"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="tab-settings" class="tab-content hidden">
+    <div class="card gold">
+      <h2>🔒 Đổi mật khẩu Super Admin</h2>
+      <form id="changePassForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mật khẩu cũ</label>
+            <input type="password" id="oldPass" required />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu mới (≥ 6 ký tự)</label>
+            <input type="password" id="newPass" required minlength="6" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-gold">💾 Đổi mật khẩu</button>
+        <div class="msg" id="passMsg"></div>
+      </form>
+    </div>
+
+    <div class="card gold">
+      <h2>🔑 Đổi mật khẩu chung Admin phụ</h2>
+      <form id="changeAdminPassForm">
+        <div class="form-group">
+          <label>Mật khẩu mới cho admin phụ</label>
+          <input type="text" id="newAdminPass" required minlength="6" placeholder="VD: VANDATADMINPHU" />
+        </div>
+        <button type="submit" class="btn btn-gold">💾 Đổi mật khẩu admin phụ</button>
+        <div class="msg" id="adminPassMsg"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>💾 Backup dữ liệu</h2>
+      <p style="color:var(--muted);margin-bottom:12px">Tải toàn bộ dữ liệu Firebase về máy (JSON)</p>
+      <button class="btn btn-primary" id="backupBtn">📥 Tải Backup JSON</button>
+    </div>
+
+    <div class="card">
+      <h2>📊 Xuất Excel danh sách KEY</h2>
+      <p style="color:var(--muted);margin-bottom:12px">Tải danh sách tất cả KEY (CSV - mở bằng Excel)</p>
+      <button class="btn btn-primary" id="exportBtn">📊 Xuất CSV</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getDatabase, ref, push, set, update, onValue, remove, get
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBgMM_kWB6jDjTYgP2j-GEnMXKXTwxDdss",
+  authDomain: "hongquan-web.firebaseapp.com",
+  databaseURL: "https://hongquan-web-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hongquan-web",
+  storageBucket: "hongquan-web.firebasestorage.app",
+  messagingSenderId: "117599956210",
+  appId: "1:117599956210:web:492dc0a9c290c4e346346b"
+};
+
+const SESSION_KEY = "hq_super_session";
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let SUPER_PASSWORD = "machongquanadminweb1311";
+let ADMIN_PASSWORD = "VANDATADMINPHU";
+
+const loginView = document.getElementById("loginView");
+const mainView = document.getElementById("mainView");
+const loginForm = document.getElementById("loginForm");
+const loginMsg = document.getElementById("loginMsg");
+const passwordInput = document.getElementById("password");
+const toast = document.getElementById("toast");
+
+let allAdmins = {};
+let allKeys = [];
+let currentFilter = "all";
+let searchTerm = "";
+let unsubAdmins = null;
+let unsubKeys = null;
+
+function showToast(text, isError = false) {
+  toast.textContent = text;
+  toast.className = "toast show" + (isError ? " error" : "");
+  setTimeout(() => toast.className = "toast", 2500);
+}
+
+async function loadPasswords() {
+  try {
+    const snap = await get(ref(db, "config/superAdmin"));
+    if (snap.exists()) {
+      const d = snap.val();
+      if (d.password) SUPER_PASSWORD = d.password;
+      if (d.adminPassword) ADMIN_PASSWORD = d.adminPassword;
+    }
+  } catch(e) { console.warn(e); }
+}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await loadPasswords();
+  if (passwordInput.value === SUPER_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, "1");
+    showMain();
+  } else {
+    loginMsg.textContent = "❌ Sai mật khẩu!";
+    loginMsg.className = "msg error show";
+    passwordInput.value = "";
+  }
+});
+
+if (sessionStorage.getItem(SESSION_KEY) === "1") showMain();
+
+function showMain() {
+  loginView.classList.add("hidden");
+  mainView.classList.remove("hidden");
+  loadAdmins();
+  loadKeys();
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem(SESSION_KEY);
+  if (unsubAdmins) unsubAdmins();
+  if (unsubKeys) unsubKeys();
+  location.reload();
+});
+
+document.getElementById("refreshBtn").addEventListener("click", () => {
+  showToast("Đã làm mới");
+  loadAdmins(); loadKeys();
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+    tab.classList.add("active");
+    document.getElementById("tab-" + tab.dataset.tab).classList.remove("hidden");
+  });
+});
+
+document.getElementById("createAdminForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("adminMsg");
+  const username = document.getElementById("newAdminUsername").value.trim().toLowerCase();
+  const name = document.getElementById("newAdminName").value.trim();
+  const email = document.getElementById("newAdminEmail").value.trim();
+  const note = document.getElementById("newAdminNote").value.trim();
+
+  if (username.length < 3) { msg.textContent = "❌ Username ≥ 3 ký tự!"; msg.className = "msg error show"; return; }
+  if (Object.values(allAdmins).some(a => a.username === username)) {
+    msg.textContent = "❌ Username đã tồn tại!"; msg.className = "msg error show"; return;
+  }
+
+  msg.textContent = "⏳ Đang tạo..."; msg.className = "msg success show";
+  try {
+    const adminRef = push(ref(db, "admins"));
+    await set(adminRef, {
+      username, name, email, note,
+      status: "active", createdAt: Date.now()
+    });
+    msg.textContent = `✅ Đã tạo admin "${name}"!\n\nUsername: ${username}\nPassword: ${ADMIN_PASSWORD}`;
+    msg.className = "msg success show";
+    e.target.reset();
+    showToast("Đã tạo admin mới");
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+function loadAdmins() {
+  if (unsubAdmins) unsubAdmins();
+  unsubAdmins = onValue(ref(db, "admins"), (snap) => {
+    const data = snap.val() || {};
+    delete data._placeholder;
+    allAdmins = data;
+    renderAdmins();
+    document.getElementById("statAdmins").textContent = Object.keys(data).length;
+  });
+}
+
+function renderAdmins() {
+  const tbody = document.getElementById("adminTableBody");
+  const list = Object.entries(allAdmins);
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Chưa có admin phụ nào</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(([id, a]) => {
+    const keyCount = allKeys.filter(k => k.createdBy === id).length;
+    const st = a.status === "locked" ? "locked" : "active";
+    const stLabel = st === "locked" ? "Đã khóa" : "Hoạt động";
+    return `
+      <tr>
+        <td><b style="color:var(--neon)">${escapeHtml(a.username)}</b></td>
+        <td>${escapeHtml(a.name || "")}</td>
+        <td style="color:var(--muted);font-size:13px">${escapeHtml(a.email || "-")}</td>
+        <td><b style="color:var(--gold)">${keyCount}</b></td>
+        <td><span class="badge ${st}">${stLabel}</span></td>
+        <td>
+          <button class="btn btn-sm ${st === "locked" ? "btn-success" : "btn-ghost"}" onclick="toggleAdmin('${id}','${a.status || "active"}')">
+            ${st === "locked" ? "🔓 Mở" : "🔒 Khóa"}
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteAdmin('${id}')">🗑️</button>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+function loadKeys() {
+  if (unsubKeys) unsubKeys();
+  unsubKeys = onValue(ref(db, "keys"), (snap) => {
+    const data = snap.val() || {};
+    allKeys = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+    updateStats();
+    renderAllKeys();
+    renderAdmins();
+  });
+}
+
+function updateStats() {
+  let active = 0, locked = 0;
+  allKeys.forEach(k => {
+    const st = getStatus(k);
+    if (st === "active") active++;
+    else if (st === "locked") locked++;
+  });
+  document.getElementById("statTotalKeys").textContent = allKeys.length;
+  document.getElementById("statActive").textContent = active;
+  document.getElementById("statLocked").textContent = locked;
+}
+
+function getStatus(k) {
+  if (k.status === "locked") return "locked";
+  if (k.expiresAt && Date.now() > k.expiresAt) return "expired";
+  return "active";
+}
+
+function getCreatorName(createdBy) {
+  if (createdBy === "super") return "👑 Super Admin";
+  const admin = allAdmins[createdBy];
+  return admin ? admin.name : "❓ Không rõ";
+}
+
+function renderAllKeys() {
+  let list = allKeys.slice();
+  if (currentFilter !== "all") list = list.filter(k => getStatus(k) === currentFilter);
+  if (searchTerm) {
+    const s = searchTerm.toLowerCase();
+    list = list.filter(k =>
+      (k.key || "").toLowerCase().includes(s) ||
+      (k.note || "").toLowerCase().includes(s)
+    );
+  }
+  list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  const tbody = document.getElementById("allKeysBody");
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Không có KEY nào</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(k => {
+    const st = getStatus(k);
+    const stLabel = { active: "Hoạt động", locked: "Đã khóa", expired: "Hết hạn" }[st];
+    const isSuper = k.createdBy === "super";
+    return `
+      <tr>
+        <td class="key-cell" onclick="copyKey('${k.key}')">${k.key}</td>
+        <td>${k.type || "-"}</td>
+        <td><span class="badge ${isSuper ? "super" : "active"}">${escapeHtml(getCreatorName(k.createdBy))}</span></td>
+        <td>${k.expiresAt ? formatDate(k.expiresAt) : "♾️"}</td>
+        <td><span class="badge ${st}">${stLabel}</span></td>
+        <td>
+          <button class="btn btn-sm ${st === "locked" ? "btn-success" : "btn-ghost"}" onclick="toggleKey('${k.id}','${k.status}')">
+            ${st === "locked" ? "🔓" : "🔒"}
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteKey('${k.id}')">🗑️</button>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+document.getElementById("createKeyForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("keyMsg");
+  const type = document.getElementById("keyType").value;
+  const prefix = document.getElementById("keyPrefix").value.trim() || "HQ";
+  const qty = parseInt(document.getElementById("keyQty").value) || 1;
+  const durVal = document.getElementById("durationValue").value.trim();
+  const durUnit = document.getElementById("durationUnit").value;
+  const note = document.getElementById("keyNote").value.trim();
+
+  let expiresAt = null;
+  if (durVal) {
+    const v = parseInt(durVal);
+    let ms = 0;
+    if (durUnit === "hours") ms = v * 3600 * 1000;
+    else if (durUnit === "days") ms = v * 86400 * 1000;
+    else if (durUnit === "months") ms = v * 30 * 86400 * 1000;
+    expiresAt = Date.now() + ms;
+  }
+
+  msg.textContent = "⏳ Đang tạo KEY..."; msg.className = "msg success show";
+  try {
+    const createdKeys = [];
+    for (let i = 0; i < qty; i++) {
+      const newKey = generateKey(prefix, type);
+      const keyRef = push(ref(db, "keys"));
+      await set(keyRef, {
+        key: newKey, type, createdAt: Date.now(),
+        expiresAt, maxUses: null, usedCount: 0,
+        status: "active", note,
+        createdBy: "super", createdByName: "Super Admin"
+      });
+      createdKeys.push(newKey);
+    }
+    msg.textContent = `✅ Đã tạo ${qty} KEY!\n\n` + createdKeys.join("\n");
+    msg.className = "msg success show";
+    e.target.reset();
+    document.getElementById("keyPrefix").value = "HQ";
+    document.getElementById("keyQty").value = "1";
+    showToast("Đã tạo " + qty + " KEY");
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+function generateKey(prefix, type) {
+  const t = (type || "XX").replace(/\s+/g, "").substring(0, 3).toUpperCase();
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let r = "";
+  for (let i = 0; i < 10; i++) r += chars.charAt(Math.floor(Math.random() * chars.length));
+  const p = (prefix || "HQ").toUpperCase().substring(0, 6);
+  return `${p}-${t}-${r.substring(0,5)}-${r.substring(5,10)}`;
+}
+
+function formatDate(ts) {
+  return new Date(ts).toLocaleString("vi-VN", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+window.copyKey = function(key) {
+  navigator.clipboard.writeText(key).then(() => showToast("Đã copy: " + key));
+};
+
+window.toggleKey = async function(id, currentStatus) {
+  try {
+    const newStatus = currentStatus === "locked" ? "active" : "locked";
+    await update(ref(db, "keys/" + id), { status: newStatus });
+    showToast(newStatus === "locked" ? "Đã khóa KEY" : "Đã mở KEY");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+window.deleteKey = async function(id) {
+  if (!confirm("Xóa KEY này? Không hoàn tác được!")) return;
+  try {
+    await remove(ref(db, "keys/" + id));
+    showToast("Đã xóa KEY");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+window.toggleAdmin = async function(id, currentStatus) {
+  try {
+    const newStatus = currentStatus === "locked" ? "active" : "locked";
+    await update(ref(db, "admins/" + id), { status: newStatus });
+    showToast(newStatus === "locked" ? "Đã khóa admin" : "Đã mở admin");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+window.deleteAdmin = async function(id) {
+  if (!confirm("Xóa admin này? Không hoàn tác được!")) return;
+  try {
+    await remove(ref(db, "admins/" + id));
+    showToast("Đã xóa admin");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+};
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderAllKeys();
+  });
+});
+
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  renderAllKeys();
+});
+
+document.getElementById("changePassForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("passMsg");
+  const oldPass = document.getElementById("oldPass").value;
+  const newPass = document.getElementById("newPass").value;
+  await loadPasswords();
+  if (oldPass !== SUPER_PASSWORD) {
+    msg.textContent = "❌ Mật khẩu cũ sai!";
+    msg.className = "msg error show"; return;
+  }
+  try {
+    await update(ref(db, "config/superAdmin"), { password: newPass, updatedAt: Date.now() });
+    SUPER_PASSWORD = newPass;
+    msg.textContent = "✅ Đã đổi mật khẩu!";
+    msg.className = "msg success show";
+    e.target.reset();
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+document.getElementById("changeAdminPassForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("adminPassMsg");
+  const newPass = document.getElementById("newAdminPass").value;
+  try {
+    await update(ref(db, "config/superAdmin"), { adminPassword: newPass, updatedAt: Date.now() });
+    ADMIN_PASSWORD = newPass;
+    msg.textContent = "✅ Đã đổi mật khẩu admin phụ!";
+    msg.className = "msg success show";
+    e.target.reset();
+  } catch (err) {
+    msg.textContent = "❌ Lỗi: " + err.message;
+    msg.className = "msg error show";
+  }
+});
+
+document.getElementById("backupBtn").addEventListener("click", async () => {
+  try {
+    const snap = await get(ref(db, "/"));
+    const data = snap.val() || {};
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup-hongquan-" + new Date().toISOString().slice(0,10) + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Đã tải backup");
+  } catch (err) { showToast("Lỗi: " + err.message, true); }
+});
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  if (allKeys.length === 0) { showToast("Không có KEY nào", true); return; }
+  let csv = "KEY,Loại,Người tạo,Hạn,Lượt dùng,Trạng thái,Ghi chú\n";
+  allKeys.forEach(k => {
+    const st = getStatus(k);
+    csv += `"${k.key || ""}","${k.type || ""}","${getCreatorName(k.createdBy)}",`;
+    csv += `"${k.expiresAt ? formatDate(k.expiresAt) : "Vĩnh viễn"}",`;
+    csv += `"${k.usedCount || 0}","${st}","${(k.note || "").replace(/"/g, '""')}"\n`;
+  });
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "keys-hongquan-" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Đã xuất CSV");
+});
+</script>
+</body>
+</html>
